@@ -40,6 +40,19 @@ jobs:
           unzip -q "$ZIP_FILE" -d extracted
           test -f extracted/YouTubeScrollGuard/app/build.gradle.kts
 
+      - name: Fix JVM target compatibility
+        run: |
+          sed -i '/defaultConfig {/i\
+              compileOptions {\
+                  sourceCompatibility = JavaVersion.VERSION_17\
+                  targetCompatibility = JavaVersion.VERSION_17\
+              }' extracted/YouTubeScrollGuard/app/build.gradle.kts
+
+          sed -i '/^android {/a\
+              kotlinOptions {\
+                  jvmTarget = "17"\
+              }' extracted/YouTubeScrollGuard/app/build.gradle.kts
+
       - name: Build APK
         run: gradle -p extracted/YouTubeScrollGuard :app:assembleDebug
 
